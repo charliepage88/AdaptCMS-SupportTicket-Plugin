@@ -1,5 +1,9 @@
 <?php
-
+/**
+ * Class TicketCategoriesController
+ *
+ * @property TicketCategory $TicketCategory
+ */
 class TicketCategoriesController extends SupportTicketAppController
 {
     /**
@@ -27,33 +31,26 @@ class TicketCategoriesController extends SupportTicketAppController
     /**
     * Returns a paginated index of Ticket Categories
     *
-    * @return associative array of categories data
+    * @return array of categories data
     */
 	public function admin_index()
 	{
 		$conditions = array();
 
-		if (!isset($this->params->named['trash'])) {
-	        $conditions['TicketCategory.deleted_time'] = '0000-00-00 00:00:00';
-	    } else {
-	        $conditions['TicketCategory.deleted_time !='] = '0000-00-00 00:00:00';
-        }
+		if (isset($this->request->named['trash']))
+	        $conditions['TicketCategory.only_deleted'] = true;
 
 	    if ($this->permissions['any'] == 0)
-	    {
 	    	$conditions['User.id'] = $this->Auth->user('id');
-	    }
 
-        $this->paginate = array(
-            'order' => 'TicketCategory.created DESC',
-            'limit' => $this->pageLimit,
+        $this->Paginator->settings = array(
             'conditions' => $conditions,
             'contain' => array(
             	'User'
             )
         );
         
-		$this->request->data = $this->paginate('TicketCategory');
+		$this->request->data = $this->Paginator->paginate('TicketCategory');
 	}
 
     /**
@@ -86,10 +83,10 @@ class TicketCategoriesController extends SupportTicketAppController
     *
     * After POST, flash error or flash success and redirect to index
     *
-    * @param id ID of the database entry, redirect to index if no permissions
-    * @return associative array of ticket category data
+    * @param integer $id ID of the database entry, redirect to index if no permissions
+    * @return array of ticket category data
     */
-	public function admin_edit($id = null)
+	public function admin_edit($id)
 	{
       	$this->TicketCategory->id = $id;
 
@@ -106,20 +103,8 @@ class TicketCategoriesController extends SupportTicketAppController
 	        }
 	    }
 
-        $this->request->data = $this->TicketCategory->find('first', array(
-        	'conditions' => array(
-        		'TicketCategory.id' => $id
-        	),
-        	'contain' => array(
-        		'User'
-        	)
-        ));
-
-        if ($this->request->data['User']['id'] != $this->Auth->user('id') && $this->permissions['any'] == 0)
-        {
-            $this->Session->setFlash('You cannot access another users item.', 'flash_error');
-            $this->redirect(array('action' => 'index'));	        	
-        }
+		$this->request->data = $this->TicketCategory->findById($id);
+		$this->hasAccessToItem($this->request->data);
 	}
 
     /**
@@ -127,49 +112,27 @@ class TicketCategoriesController extends SupportTicketAppController
     *
     * But if it has a deletion time, meaning it is in the trash, deleting it the second time is permanent.
     *
-    * @param id ID of the database entry, redirect to index if no permissions
-    * @param title Title of this entry, used for flash message
-    * @param permanent If not NULL, this means the item is in the trash so deletion will now be permanent
-    * @return redirect
+    * @param integer $id ID of the database entry, redirect to index if no permissions
+    * @param string $title Title of this entry, used for flash message
+    * @return void
     */
-	public function admin_delete($id = null, $title = null, $permanent = null)
+	public function admin_delete($id, $title = null)
 	{
 	    $this->TicketCategory->id = $id;
 
-        $data = $this->TicketCategory->find('first', array(
-        	'conditions' => array(
-        		'TicketCategory.id' => $id
-        	),
-        	'contain' => array(
-    			'User'
-        	)
-        ));
-        if ($data['User']['id'] != $this->Auth->user('id') && $this->permissions['any'] == 0)
-        {
-            $this->Session->setFlash('You cannot access another users item.', 'flash_error');
-            $this->redirect(array('action' => 'index'));	        	
-        }
+		$data = $this->TicketCategory->findById($id);
+		$this->hasAccessToItem($data);
 
-	    if (!empty($permanent))
-	    {
-	    	$delete = $this->TicketCategory->delete($id);
-	    } else {
-	    	$delete = $this->TicketCategory->saveField('deleted_time', $this->TicketCategory->dateTime());
-	    }
+		$permanent = $this->TicketCategory->remove($data);
 
-	    if ($delete)
-	    {
-	        $this->Session->setFlash('The ticket category `'.$title.'` has been deleted.', 'flash_success');
-	    } else {
-	    	$this->Session->setFlash('The ticket category `'.$title.'` has NOT been deleted.', 'flash_error');
-	    }
+		$this->Session->setFlash('The ticket category `'.$title.'` has been deleted.', 'flash_success');
 
-	    if (!empty($permanent))
-	    {
-	    	$this->redirect(array('action' => 'index', 'trash' => 1));
-	    } else {
-	    	$this->redirect(array('action' => 'index'));
-	    }
+		if ($permanent)
+		{
+			$this->redirect(array('action' => 'index', 'trash' => 1));
+		} else {
+			$this->redirect(array('action' => 'index'));
+		}
 	}
 
     /**
@@ -177,29 +140,18 @@ class TicketCategoriesController extends SupportTicketAppController
     *
     * This makes it live wherever applicable
     *
-    * @param id ID of database entry, redirect if no permissions
-    * @param title Title of this entry, used for flash message
-    * @return direct
+    * @param integer $id ID of database entry, redirect if no permissions
+    * @param string $title Title of this entry, used for flash message
+    * @return void
     */
-	public function admin_restore($id = null, $title = null)
+	public function admin_restore($id, $title = null)
 	{
 	    $this->TicketCategory->id = $id;
 
-        $data = $this->TicketCategory->find('first', array(
-        	'conditions' => array(
-        		'TicketCategory.id' => $id
-        	),
-        	'contain' => array(
-    			'User'
-        	)
-        ));
-        if ($data['User']['id'] != $this->Auth->user('id') && $this->permissions['any'] == 0)
-        {
-            $this->Session->setFlash('You cannot access another users item.', 'flash_error');
-            $this->redirect(array('action' => 'index'));	        	
-        }
+		$data = $this->TicketCategory->findById($id);
+		$this->hasAccessToItem($data);
 
-	    if ($this->TicketCategory->saveField('deleted_time', '0000-00-00 00:00:00'))
+	    if ($this->TicketCategory->restore())
 	    {
 	        $this->Session->setFlash('The ticket category `'.$title.'` has been restored.', 'flash_success');
 	        $this->redirect(array('action' => 'index'));

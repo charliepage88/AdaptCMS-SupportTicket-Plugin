@@ -26,7 +26,6 @@
 	<h2>Edit Ticket Category</h2>
 
 	<?= $this->Form->input('title', array('type' => 'text', 'class' => 'required')) ?>
-	<?= $this->Form->hidden('modified', array('value' => $this->Admin->datetime() )) ?>
 	<?= $this->Form->hidden('id') ?>
 
 <?= $this->Form->end(array(

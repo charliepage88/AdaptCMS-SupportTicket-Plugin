@@ -4,8 +4,8 @@ CREATE TABLE IF NOT EXISTS `{prefix}plugin_support_categories` (
   `slug` varchar(255) NOT NULL,
   `description` TEXT DEFAULT NULL,
   `user_id` int(11) NOT NULL,
-  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `modified` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `created` datetime NOT NULL,
+  `modified` datetime NOT NULL,
   `deleted_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`,`deleted_time`)
@@ -22,8 +22,8 @@ CREATE TABLE IF NOT EXISTS `{prefix}plugin_support_tickets` (
   `email` varchar(255) NOT NULL,
   `priority` varchar(50) NOT NULL,
   `parent_id` int(11) NOT NULL,
-  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `modified` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `created` datetime NOT NULL,
+  `modified` datetime NOT NULL,
   `deleted_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`,`category_id`,`deleted_time`)

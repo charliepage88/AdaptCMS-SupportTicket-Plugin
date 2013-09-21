@@ -33,19 +33,22 @@ class TicketCategory extends SupportTicketAppModel {
             )
         )
     );
+
+    /**
+     * @var array
+     */
+    public $actsAs = array(
+	    'Slug',
+	    'Delete'
+    );
     
     /**
     * Sets the slug
     *
-    * @return true
+    * @return boolean
     */
     public function beforeSave()
     {
-        if (!empty($this->data['TicketCategory']['title']))
-        {
-            $this->data['TicketCategory']['slug'] = $this->slug($this->data['TicketCategory']['title']);
-        }
-
         $this->data = Sanitize::clean($this->data, array(
             'encode' => false,
             'remove_html' => true

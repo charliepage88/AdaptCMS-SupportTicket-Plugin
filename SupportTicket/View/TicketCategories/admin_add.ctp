@@ -11,7 +11,6 @@
 	<h2>Add Ticket Category</h2>
 
 	<?= $this->Form->input('title', array('type' => 'text', 'class' => 'required')) ?>
-	<?= $this->Form->hidden('created', array('value' => $this->Admin->datetime() )) ?>
 
 <?= $this->Form->end(array(
 	'label' => 'Submit',

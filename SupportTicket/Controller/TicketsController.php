@@ -16,7 +16,7 @@ class TicketsController extends SupportTicketAppController {
 	
 		$this->permissions = $this->getPermissions();
 
-		if ($this->params->action == 'add')
+		if ($this->request->action == 'add')
 		{
 	        $categories = $this->Ticket->TicketCategory->find('list', array(
 	        	'conditions' => array(
@@ -34,7 +34,7 @@ class TicketsController extends SupportTicketAppController {
 			'view'
 		);
 
-		if (in_array($this->params->action, $actions))
+		if (in_array($this->request->action, $actions))
 		{
 			if (!$this->Auth->user('id') && Configure::read('SupportTicket.captcha_for_guests'))
 			{
@@ -47,7 +47,7 @@ class TicketsController extends SupportTicketAppController {
 
 	public function index()
 	{
-		$this->paginate = array(
+		$this->Paginator->settings = array(
             'order' => 'Ticket.created DESC',
             'contain' => array(
 	        	'User',
@@ -60,7 +60,7 @@ class TicketsController extends SupportTicketAppController {
             'limit' => 10
         );
         
-		$this->request->data = $this->Ticket->getReplyCount($this->paginate('Ticket'));
+		$this->request->data = $this->Ticket->getReplyCount($this->Paginator->paginate('Ticket'));
 
 		$this->set('tickets', $this->request->data);
 	}

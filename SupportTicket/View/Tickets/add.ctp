@@ -25,7 +25,6 @@
 	<?= $this->Form->input('message', array('rows' => 15, 'style' => 'width:500px', 'class' => 'required')) ?>
 
 	<?= $this->Form->input('priority', array('type' => 'text', 'class' => 'required')) ?>
-	<?= $this->Form->hidden('created', array('value' => $this->Admin->datetime() )) ?>
 
 	<?php if (!empty($captcha)): ?>
 		<div id="captcha">

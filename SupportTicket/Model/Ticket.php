@@ -38,26 +38,45 @@ class Ticket extends SupportTicketAppModel {
     );
 
     /**
+     * @var array
+     */
+    public $actsAs = array(
+	    'Slug' => array(
+            'field' => 'subject'
+	    ),
+	    'Delete'
+    );
+
+    /**
     * Sets the slug
     *
-    * @return true
+    * @return boolean
     */
     public function beforeSave()
     {
-        if (!empty($this->data['Ticket']['subject']))
-        {
-            $this->data['Ticket']['slug'] = $this->slug($this->data['Ticket']['subject']);
-        }
-        
+        parent::beforeSave();
+
         $this->data = Sanitize::clean($this->data, array(
             'encode' => false,
             'remove_html' => true
         ));
 
+	    if (!empty($this->data['Ticket']['message']))
+		    $this->data['Ticket']['message'] = stripslashes(str_replace('\n', '', $this->data['Ticket']['message']));
+
+	    if (!empty($this->data['Ticket']['subject']))
+		    $this->data['Ticket']['subject'] = stripslashes(str_replace('\n', '', $this->data['Ticket']['subject']));
+
         return true;
     }
 
-    public function getReplyCount($data = array())
+	/**
+	 * Get Reply Count
+	 *
+	 * @param array $data
+	 * @return array
+	 */
+	public function getReplyCount($data = array())
     {
         if (!empty($data))
         {
@@ -79,7 +98,13 @@ class Ticket extends SupportTicketAppModel {
         return $data;
     }
 
-    public function afterFind($results = array())
+	/**
+	 * After Find
+	 *
+	 * @param array $results
+	 * @return array
+	 */
+	public function afterFind($results = array())
     {
         if (!empty($results))
         {

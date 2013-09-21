@@ -1,6 +1,6 @@
 {
     "title": "Support Tickets",
-    "current_version": "1.0",
+    "current_version": "1.0.1",
     "api_id": 3,
     "install": {
     	"block_active": 0,
