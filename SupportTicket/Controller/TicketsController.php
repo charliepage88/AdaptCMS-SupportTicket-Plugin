@@ -80,7 +80,7 @@ class TicketsController extends SupportTicketAppController {
 		        if (!empty($securimage) && 
 		            !$securimage->check($this->request->data['captcha']))
 		        {
-		            $this->Session->setFlash('Incorrect captcha entred.', 'flash_error');
+		            $this->Session->setFlash('Incorrect captcha entred.', 'error');
 		            $error = true;
 		        }
 	        }
@@ -89,14 +89,14 @@ class TicketsController extends SupportTicketAppController {
 	        {
 	            if ($this->Ticket->save($this->request->data))
 	            {
-			        $this->Session->setFlash('The ticket has been added.', 'flash_success');
+			        $this->Session->setFlash('The ticket has been added.', 'success');
 			        $this->redirect(array(
 			        	'action' => 'view',
 			        	'id' => $this->Ticket->id,
 			        	'slug' => $this->slug($this->request->data['Ticket']['subject'])
 			        ));
 			    } else {
-			    	$this->Session->setFlash('The ticket has NOT been added.', 'flash_error');
+			    	$this->Session->setFlash('The ticket has NOT been added.', 'error');
 			    }
 			}
         }
@@ -127,7 +127,7 @@ class TicketsController extends SupportTicketAppController {
 		        if (!empty($securimage) && 
 		            !$securimage->check($this->request->data['captcha']))
 		        {
-		            $this->Session->setFlash('Incorrect captcha entred.', 'flash_error');
+		            $this->Session->setFlash('Incorrect captcha entred.', 'error');
 		            $error = true;
 		        }
 	        }
@@ -136,9 +136,9 @@ class TicketsController extends SupportTicketAppController {
 	        {
 	            if ($this->Ticket->save($this->request->data))
 	            {
-			        $this->Session->setFlash('Your reply has been added.', 'flash_success');
+			        $this->Session->setFlash('Your reply has been added.', 'success');
 			    } else {
-			    	$this->Session->setFlash('Your reply has NOT been added. Make sure to fill in all fields.', 'flash_error');
+			    	$this->Session->setFlash('Your reply has NOT been added. Make sure to fill in all fields.', 'error');
 			    }
 
 			    $redirect = true;

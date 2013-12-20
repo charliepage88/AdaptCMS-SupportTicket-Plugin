@@ -70,10 +70,10 @@ class TicketCategoriesController extends SupportTicketAppController
 
             if ($this->TicketCategory->save($this->request->data))
             {
-                $this->Session->setFlash('Your ticket category has been added.', 'flash_success');
+                $this->Session->setFlash('Your ticket category has been added.', 'success');
                 $this->redirect(array('action' => 'index'));
             } else {
-                $this->Session->setFlash('Unable to add your ticket category.', 'flash_error');
+                $this->Session->setFlash('Unable to add your ticket category.', 'error');
             }
         }
 	}
@@ -96,10 +96,10 @@ class TicketCategoriesController extends SupportTicketAppController
 
 	        if ($this->TicketCategory->save($this->request->data))
 	        {
-	            $this->Session->setFlash('Your ticket category has been updated.', 'flash_success');
+	            $this->Session->setFlash('Your ticket category has been updated.', 'success');
 	            $this->redirect(array('action' => 'index'));
 	        } else {
-	            $this->Session->setFlash('Unable to update your ticket category.', 'flash_error');
+	            $this->Session->setFlash('Unable to update your ticket category.', 'error');
 	        }
 	    }
 
@@ -125,7 +125,7 @@ class TicketCategoriesController extends SupportTicketAppController
 
 		$permanent = $this->TicketCategory->remove($data);
 
-		$this->Session->setFlash('The ticket category `'.$title.'` has been deleted.', 'flash_success');
+		$this->Session->setFlash('The ticket category `'.$title.'` has been deleted.', 'success');
 
 		if ($permanent)
 		{
@@ -153,10 +153,10 @@ class TicketCategoriesController extends SupportTicketAppController
 
 	    if ($this->TicketCategory->restore())
 	    {
-	        $this->Session->setFlash('The ticket category `'.$title.'` has been restored.', 'flash_success');
+	        $this->Session->setFlash('The ticket category `'.$title.'` has been restored.', 'success');
 	        $this->redirect(array('action' => 'index'));
 	    } else {
-	    	$this->Session->setFlash('The ticket category `'.$title.'` has NOT been restored.', 'flash_error');
+	    	$this->Session->setFlash('The ticket category `'.$title.'` has NOT been restored.', 'error');
 	        $this->redirect(array('action' => 'index'));
 	    }
 	}

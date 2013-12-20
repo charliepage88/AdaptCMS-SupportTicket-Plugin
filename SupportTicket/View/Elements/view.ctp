@@ -1,31 +1,29 @@
-<div class="span10 well<?php if (!$ticket['reply']): ?> no-marg-left<?php endif ?>" id="ticket-<?= $ticket['Ticket']['id'] ?>">
+<div class="span10 well{% if !$ticket['reply'] %} no-marg-left{% endif %}" id="ticket-{{ ticket['Ticket']['id'] }}">
 	<div class="header">
 		<h5>
-			<?php if (!empty($ticket['Ticket']['full_name'])): ?>
-
-			<?php endif ?>
-			<?php if (!empty($ticket['User']['username'])): ?>
-				<?= $this->Html->link('(' . $ticket['User']['username'] . ')', array(
-					'controller' => 'users',
-					'action' => 'profile',
-					$ticket['User']['username']
-				)) ?>
-			<?php else: ?>
+			{% if not empty(ticket['Ticket']['full_name']) %}
+				{{ ticket['Ticket']['full_name'] }}
+			{% endif %}
+			{% if not empty(ticket['User']['username']) %}
+				<a href="{{ url('user_profile', $ticket) }}">
+					({{ ticket['User']['username'] }})
+				</a>
+			{% else %}
 				(Guest)
-			<?php endif ?>
-			 @ 
-			<?= $this->Admin->time($ticket['Ticket']['created'], 'words') ?>
+			{% endif %}
+			 @
+			{{ time(ticket, 'words', 'created') ?>
 		</h5>
 
-		<?php if (!$ticket['reply']): ?>
+		{% if not $ticket['reply'] %}
 			<h3>
-				<?= $ticket['Ticket']['subject'] ?>
+				{{ ticket['Ticket']['subject'] }}
 			</h3>
-		<?php endif ?>
+		{% endif %}
 	</div>
 
 	<div class="body">
-		<?= $ticket['Ticket']['message'] ?>
+		{{ ticket['Ticket']['message'] }}
 	</div>
 </div>
 
